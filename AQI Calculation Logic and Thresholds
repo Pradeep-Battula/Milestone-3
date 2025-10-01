@@ -16,3 +16,17 @@ def simple_aqi(val, pol):
 
 aqi_values = [simple_aqi(v, pol) for pol, v in latest_pollutants.items()]
 overall_aqi = int(max(aqi_values))
+
+Visualization (Donut Chart):
+
+fig, ax = plt.subplots(figsize=(4,4), facecolor='none')
+wedges, texts, autotexts = ax.pie(
+    latest_pollutants, labels=latest_pollutants.index,
+    autopct="%1.1f%%", startangle=140,
+    colors=plt.cm.tab20.colors[:len(latest_pollutants)],
+    wedgeprops={'width':0.4, 'edgecolor':'w'},
+    pctdistance=0.8
+)
+ax.text(0, 0, f"AQI\n{overall_aqi}", ha='center', va='center',
+        fontsize=16, fontweight='bold', color='red')
+st.pyplot(fig, clear_figure=True)
