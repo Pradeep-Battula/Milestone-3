@@ -1,0 +1,35 @@
+Objective:
+Identify and highlight pollutants exceeding safe limits and show warnings dynamically.
+
+Implementation:
+
+Thresholds defined for key pollutants: PM2.5, PM10, NO2, SO2, O3.
+
+Display alerts using st.warning() when latest pollutant value exceeds threshold.
+
+Integrated Prophet forecast for user-selected pollutants to predict future trends.
+
+Code Snippet (Alerts):
+
+thresholds = {'PM2.5': 60, 'PM10': 100, 'NO2': 80, 'SO2': 80, 'O3': 100}
+for pol in pollutants:
+    latest_val = latest.get(pol)
+    if latest_val and pol in thresholds and latest_val > thresholds[pol]:
+        st.warning(f"{pol} exceeds safe limit! ({latest_val})")
+
+
+Code Snippet (Forecast):
+
+forecast_data = city_df[['Date', selected_pollutant]].dropna()
+forecast_data = forecast_data.rename(columns={'Date':'ds', selected_pollutant:'y'})
+
+model = Prophet(daily_seasonality=True)
+model.fit(forecast_data)
+future = model.make_future_dataframe(periods=forecast_days)
+forecast = model.predict(future)
+
+fig1 = model.plot(forecast)
+st.pyplot(fig1)
+
+fig2 = model.plot_components(forecast)
+st.pyplot(fig2)
