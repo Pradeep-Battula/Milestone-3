@@ -1,0 +1,18 @@
+Objective:
+Calculate overall AQI for the city based on pollutant concentrations and predefined thresholds.
+
+Implementation:
+
+Function simple_aqi(val, pol) computes AQI for each pollutant.
+
+Overall AQI is the maximum AQI across all pollutants.
+
+Severity colors for AQI visualization: Green → Good, Yellow → Satisfactory, Orange → Moderate, Red → Poor, Purple → Very Poor, Maroon → Severe.
+
+def simple_aqi(val, pol):
+    thresholds = {'PM2.5': 60, 'PM10': 100, 'NO2': 80, 'SO2': 80, 'O3': 100,
+                  'CO': 10, 'NH3': 400, 'NO': 80, 'NOx': 100}
+    return (val / thresholds.get(pol, 100)) * 100
+
+aqi_values = [simple_aqi(v, pol) for pol, v in latest_pollutants.items()]
+overall_aqi = int(max(aqi_values))
