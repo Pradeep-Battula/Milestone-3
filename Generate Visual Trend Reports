@@ -1,0 +1,63 @@
+Objective:
+Provide interactive visualizations for current and historical pollutant trends.
+
+Features Implemented:
+
+Daily Average Trends:
+
+Line plots for selected pollutants over time.
+
+Users can compare multiple pollutants simultaneously.
+
+fig, ax = plt.subplots(figsize=(12,6))
+for pol in multi_pollutants:
+    ax.plot(daily_avg['Date'], daily_avg[pol], label=pol)
+ax.set_title(f"Daily Average Pollutants in {city}")
+ax.set_xlabel("Date")
+ax.set_ylabel("Concentration")
+ax.legend()
+st.pyplot(fig)
+
+
+Normalized Multi-Pollutant Comparison:
+
+Normalizes values to 0–1 for direct comparison between pollutants with different scales.
+
+norm_df = daily_avg.copy()
+for pol in multi_pollutants:
+    norm_df[pol] = (norm_df[pol] - norm_df[pol].min()) / (norm_df[pol].max() - norm_df[pol].min())
+
+fig, ax = plt.subplots(figsize=(12,6))
+for pol in multi_pollutants:
+    ax.plot(norm_df['Date'], norm_df[pol], label=pol)
+ax.set_title(f"Normalized Daily Trends in {city}")
+ax.set_xlabel("Date")
+ax.set_ylabel("Normalized Value (0-1)")
+ax.legend()
+st.pyplot(fig)
+
+
+2x2 Metrics Cards / Current Pollutant Snapshot:
+
+Donut chart for AQI contribution by pollutants.
+
+Dynamic cards for key pollutants (PM2.5, PM10, overall AQI, selected pollutant).
+
+col1, col2 = st.columns(2)
+col3, col4 = st.columns(2)
+
+with col1:
+    st.subheader("🥯 Current Air Quality")
+    st.pyplot(fig, clear_figure=True)
+
+with col2:
+    st.subheader(f"🌫️ Latest {selected_pollutant}")
+    st.metric(label=f"{selected_pollutant} (µg/m³)", value=latest[selected_pollutant])
+
+with col3:
+    st.subheader("💨 Latest PM10")
+    st.metric(label="PM10 (µg/m³)", value=latest['PM10'])
+
+with col4:
+    st.subheader("📊 Overall AQI")
+    st.metric(label="AQI Value", value=overall_aqi)
